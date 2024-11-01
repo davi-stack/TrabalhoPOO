@@ -1,3 +1,7 @@
 # TrabalhoPO
-trabalho para matéria de POO
-Criador de orçamento
+trabalho para matï¿½ria de POO
+Criador de orï¿½amento
+
+# Compilar o cÃ³digo no terminal
+cd src/main/java
+java com.suacompanhia.projeto.Main
