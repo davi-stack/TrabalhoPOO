@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class TelaLogin extends JFrame {
 
@@ -46,8 +48,8 @@ public class TelaLogin extends JFrame {
         jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 24));
         jLabel1.setForeground(new Color(0, 123, 255));
 
-        jTextField1.setToolTipText("E-mail");
-        jPasswordField1.setToolTipText("Senha");
+        setPlaceholder(jTextField1, "Digite seu e-mail");
+        setPlaceholder(jPasswordField1, "Digite sua senha");
 
         // Configuração dos botões
         Dimension buttonSize = new Dimension(120, 35); // Tamanho uniforme para os botões
@@ -109,7 +111,9 @@ public class TelaLogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Usuário ou senha inválidos");
                     return;
                 }
-                jButton2ActionPerformed(evt);
+                // Fecha a tela de login antes de abrir a principal
+                dispose();
+                abrirTelaPrincipal();
             }
         });
 
@@ -117,15 +121,42 @@ public class TelaLogin extends JFrame {
         jButtonCadastro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                TelaCadastro telaCadastro = new TelaCadastro();
-                telaCadastro.setVisible(true);
+                dispose();
+                abrirTelaCadastro();
             }
         });
     }
 
-    private void jButton2ActionPerformed(ActionEvent evt) {
+    private void setPlaceholder(JTextField field, String placeholder) {
+        field.setForeground(Color.GRAY);
+        field.setText(placeholder);
+        field.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (field.getText().equals(placeholder)) {
+                    field.setText("");
+                    field.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (field.getText().isEmpty()) {
+                    field.setForeground(Color.GRAY);
+                    field.setText(placeholder);
+                }
+            }
+        });
+    }
+
+    private void abrirTelaPrincipal() {
         TelaPrincipal telaPrincipal = new TelaPrincipal();
         telaPrincipal.setVisible(true);
+    }
+
+    private void abrirTelaCadastro() {
+        TelaCadastro telaCadastro = new TelaCadastro();
+        telaCadastro.setVisible(true);
     }
 
     public static void main(String args[]) {

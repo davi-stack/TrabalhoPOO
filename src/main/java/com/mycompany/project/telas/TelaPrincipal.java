@@ -3,6 +3,8 @@ package src.main.java.com.mycompany.project.telas;
  *
  * @author Joao Vitor Dantas
  */
+import src.main.java.com.mycompany.project.entities.Cliente;
+import src.main.java.com.mycompany.project.telas.TelaCliente;
 public class TelaPrincipal extends javax.swing.JFrame {
 
     /**

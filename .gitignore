@@ -1,1 +1,7 @@
+# Ignorar a pasta BancoDeDados inteira
 BancoDeDados/
+
+# Outros arquivos ou pastas a serem ignorados
+*.log
+*.tmp
+*.ser
