@@ -1,6 +1,7 @@
 package src.main.java.com.mycompany.project.entities;
 import java.io.Serializable;
-public class Produto implements Serializable {
+import src.main.java.com.mycompany.project.entities.fromMoney.Totalizavel;
+public class Produto implements Serializable,Totalizavel {
     private String codigo;           // Código único do produto
     private String nome;
     private double preco;
@@ -12,6 +13,9 @@ public class Produto implements Serializable {
     private double metroQuadrado;    // Em metros quadrados
     private double metroCubico;      // Em metros cúbicos
 
+    public double getValorTotal() {
+        return preco;
+    }
     // Construtor
     public Produto(String codigo, String nome, double preco, double rendimento, double comprimento, double litros, int unidades, double metroLinear, double metroQuadrado, double metroCubico) {
         this.codigo = codigo;
