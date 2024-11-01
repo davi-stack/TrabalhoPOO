@@ -78,7 +78,7 @@ public class ProdutoDAO {
         List<Produto> produtos = lerProdutos();
         String csv = "Código;Nome;Preço;Rendimento;Comprimento;Litros;Unidades;Metro Linear;Metro Quadrado;Metro Cúbico\n";
         for (Produto produto : produtos) {
-            csv += produto.getCodigo() + ";" + produto.getNome() + ";" + produto.getPreco() + ";" + produto.getRendimento() + ";" + produto.getComprimento() + ";" + produto.getLitros() + ";" + produto.getUnidades() + ";" + produto.getMetroLinear() + ";" + produto.getMetroQuadrado() + ";" + produto.getMetroCubico() + "\n";
+            csv += produto.getCodigo() + ";" + produto.getNome() + ";" + produto.getPreco() + ";" + produto.getRendimento() + ";" + produto.getValor()+ "\n";
         }
         return csv;
     }
