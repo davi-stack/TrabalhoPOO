@@ -3,6 +3,7 @@ import java.io.Serializable;
 import src.main.java.com.mycompany.project.entities.fromMoney.Totalizavel;
 import java.util.ArrayList;
 import src.main.java.com.mycompany.project.entities.Enums.Unidades;
+import src.main.java.com.mycompany.project.entities.Enums.CategoriaProduto;
 public class Produto implements Serializable,Totalizavel {
     private String codigo;           // Código único do produto
     private String nome;
@@ -18,7 +19,13 @@ public class Produto implements Serializable,Totalizavel {
     // salvar quais unidades de medida o produto tem
     private double valor;
     private ArrayList<Unidades> unidadesDeMedida = new ArrayList<Unidades>();
-
+    private ArrayList<CategoriaProduto> categorias = new ArrayList<CategoriaProduto>();
+    public void addCategoria(CategoriaProduto categoria){
+        categorias.add(categoria);
+    }
+    public boolean CategoriaAplica(CategoriaProduto categoria){
+        return categorias.contains(categoria);
+    }
     public double getValorTotal() {
         return preco;
     }

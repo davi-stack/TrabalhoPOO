@@ -1,9 +1,11 @@
 package src.main.java.com.mycompany.project.telas;
+
 import src.main.java.com.mycompany.project.entities.Produto;
 import src.main.java.com.mycompany.project.entities.Enums.Unidades;
 import src.main.java.com.mycompany.project.entities.fromMoney.Totalizavel;
 import src.main.java.com.mycompany.project.Exceptions.CampoEmBranco;
 import javax.swing.*;
+import src.main.java.com.mycompany.project.entities.Enums.CategoriaProduto;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,12 +13,16 @@ import src.main.java.com.mycompany.project.dao.ProdutoDAO;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class TelaCadastroProduto extends JFrame {
     private JTextField nomeField, precoField;
     private JTextField valor;
-    private JTextField rendimentoField;
     private JComboBox<Unidades> unidades;
     private JButton cadastrarButton, limparButton, voltarButton;
+    private JPanel categoriasPanel; // Painel para checkboxes das categorias
+    private List<JCheckBox> checkBoxes; // Lista de checkboxes
 
     public TelaCadastroProduto() {
         configurarJanela();
@@ -39,8 +45,6 @@ public class TelaCadastroProduto extends JFrame {
         nomeField = new JTextField(20);
         precoField = new JTextField(20);
         valor = new JTextField(20);
-        rendimentoField = new JTextField(20);
-        rendimentoField.setEnabled(false);
 
         cadastrarButton = new JButton("Cadastrar");
         limparButton = new JButton("Limpar");
@@ -56,6 +60,17 @@ public class TelaCadastroProduto extends JFrame {
         cadastrarButton.addActionListener(new CadastrarButtonListener());
         limparButton.addActionListener(e -> limparCampos());
         voltarButton.addActionListener(e -> this.dispose());
+
+        // Inicializar o painel de categorias e checkboxes
+        categoriasPanel = new JPanel();
+        categoriasPanel.setLayout(new BoxLayout(categoriasPanel, BoxLayout.Y_AXIS));
+        checkBoxes = new ArrayList<>();
+
+        for (CategoriaProduto categoria : CategoriaProduto.values()) {
+            JCheckBox checkBox = new JCheckBox(categoria.toString());
+            checkBoxes.add(checkBox);
+            categoriasPanel.add(checkBox);
+        }
     }
 
     private void adicionarComponentesAoLayout() {
@@ -69,11 +84,20 @@ public class TelaCadastroProduto extends JFrame {
         adicionarCampo("Nome:", nomeField, linha++, gbc);
         adicionarCampo("Preço:", precoField, linha++, gbc);
         adicionarCampo("Unidades:", unidades, linha++, gbc);
-        adicionarCampo("Valor:", valor, linha++, gbc);
+        adicionarCampo("Quantidade:", valor, linha++, gbc);
 
-        gbc.gridwidth = 1;
-        gbc.gridy = linha++;
+        // Adicionar o painel de categorias ao layout
         gbc.gridx = 0;
+        gbc.gridy = linha++;
+        gbc.gridwidth = 2; // ocupa duas colunas
+        add(new JLabel("Categorias:"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = linha++;
+        add(categoriasPanel, gbc);
+        gbc.gridwidth = 1; // reseta para uma coluna
+
+        gbc.gridx = 0;
+        gbc.gridy = linha++;
         add(voltarButton, gbc);
         gbc.gridx = 1;
         add(limparButton, gbc);
@@ -101,6 +125,9 @@ public class TelaCadastroProduto extends JFrame {
         nomeField.setText("");
         precoField.setText("");
         valor.setText("");
+        for (JCheckBox checkBox : checkBoxes) {
+            checkBox.setSelected(false); // Limpa a seleção dos checkboxes
+        }
     }
 
     private class CadastrarButtonListener implements ActionListener {
@@ -128,12 +155,24 @@ public class TelaCadastroProduto extends JFrame {
             throw new CampoEmBranco("Campo 'Valor' não pode ser negativo!");
         }
 
-        return new Produto(
+        List<CategoriaProduto> categoriasSelecionadas = new ArrayList<>();
+        for (JCheckBox checkBox : checkBoxes) {
+            if (checkBox.isSelected()) {
+                categoriasSelecionadas.add(CategoriaProduto.valueOf(checkBox.getText()));
+            }
+        }
+
+        Produto produto = new Produto(
             nomeField.getText(),
             (Unidades) unidades.getSelectedItem(),
             preco,
             valorProduto
         );
+
+        // Chame o método para adicionar as categorias
+        for(CategoriaProduto categoria : categoriasSelecionadas) produto.addCategoria(categoria);
+
+        return produto;
     }
 
     private double formatarPreco(String precoStr) {
@@ -149,7 +188,7 @@ public class TelaCadastroProduto extends JFrame {
     private void verificarCampos() throws CampoEmBranco {
         if (nomeField.getText().isEmpty()) throw new CampoEmBranco("Campo 'Nome' é obrigatório!");
         if (precoField.getText().isEmpty()) throw new CampoEmBranco("Campo 'Preço' é obrigatório!");
-        if (valor.getText().isEmpty()) throw new CampoEmBranco("Campo 'Valor' é obrigatório!");
+        if (valor.getText().isEmpty()) throw new CampoEmBranco("Campo 'Quantidade' é obrigatório!");
     }
 
     public static void main(String[] args) {
