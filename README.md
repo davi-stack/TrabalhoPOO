@@ -4,4 +4,4 @@ Criador de or�amento
 
 # Compilar o código no terminal
 cd src/main/java
-java com.suacompanhia.projeto.Main
+java .\com\mycompany\project\Main.java
