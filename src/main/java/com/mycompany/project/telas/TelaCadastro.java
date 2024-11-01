@@ -8,71 +8,86 @@ import src.main.java.com.mycompany.project.entities.Endereco;
 import src.main.java.com.mycompany.project.entities.Enums.Estado;
 import src.main.java.com.mycompany.project.Exceptions.CampoEmBranco;
 import src.main.java.com.mycompany.project.dao.PrestadorDAO;
+import javax.swing.*;
+import javax.swing.text.MaskFormatter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+
 public class TelaCadastro extends JFrame {
 
-    // Componentes da interface
     private JTextField nomeField;
     private JTextField emailField;
-    private JTextField telefoneField;
+    private JFormattedTextField telefoneField;
     private JTextField usernameField;
     private JPasswordField senhaField;
     private JTextField logradouroField;
     private JTextField cidadeField;
     private JComboBox<Estado> estadoComboBox;
-    private JTextField cepField;
+    private JFormattedTextField cepField;
     private JButton voltarButton;
     private JButton cadastrarButton;
 
     private void inicializarComponentes() {
         nomeField = new JTextField();
         emailField = new JTextField();
-        telefoneField = new JTextField();
+        
+        // Máscara para Telefone
+        telefoneField = createFormattedTextField("(##) #####-####");
+        
         usernameField = new JTextField();
         senhaField = new JPasswordField();
         logradouroField = new JTextField();
         cidadeField = new JTextField();
         estadoComboBox = new JComboBox<>(Estado.values());
-        cepField = new JTextField();
-        
+
+        // Máscara para CEP
+        cepField = createFormattedTextField("#####-###");
+
         voltarButton = new JButton("Voltar");
         cadastrarButton = new JButton("Cadastrar");
         cadastrarButton.addActionListener(new CadastrarButtonListener());
         cadastrarButton.setBackground(new Color(60, 179, 113));
         cadastrarButton.setForeground(Color.WHITE);
+        
+        voltarButton.addActionListener(new VoltarListener());
     }
+
     private void adicionarComponentesAoLayout() {
+        setLayout(new GridLayout(11, 2, 5, 5));  // Organiza em 11 linhas e 2 colunas
+
         add(new JLabel("Nome:"));
         add(nomeField);
-        
+
         add(new JLabel("Email:"));
         add(emailField);
-        
+
         add(new JLabel("Telefone:"));
         add(telefoneField);
-        
+
         add(new JLabel("Username:"));
         add(usernameField);
-        
+
         add(new JLabel("Senha:"));
         add(senhaField);
-        
+
         add(new JLabel("Logradouro:"));
         add(logradouroField);
-        
+
         add(new JLabel("Cidade:"));
         add(cidadeField);
-        
+
         add(new JLabel("Estado:"));
         add(estadoComboBox);
-        
+
         add(new JLabel("CEP:"));
         add(cepField);
-        voltarButton.addActionListener(new VoltarListener());
+
         add(voltarButton);           // Botão de voltar
         add(cadastrarButton);        // Botão de cadastro
-        
     }
-    
+
     public TelaCadastro() {
         configurarJanela();
         inicializarComponentes();
@@ -84,22 +99,30 @@ public class TelaCadastro extends JFrame {
         setTitle("Cadastro de Prestador");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(11, 2, 5, 5));  // 11 linhas, 2 colunas, com espaçamento de 5 pixels
     }
-    
-    
-    
+
+    // Método para criar campos formatados (CEP e Telefone)
+    private JFormattedTextField createFormattedTextField(String mask) {
+        try {
+            MaskFormatter formatter = new MaskFormatter(mask);
+            formatter.setPlaceholderCharacter('_');
+            return new JFormattedTextField(formatter);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new JFormattedTextField();
+        }
+    }
+
     public void checkCadastro() throws CampoEmBranco {
-        // Verifica se todos os campos foram preenchidos
         if (nomeField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Campo 'Nome' é obrigatório!");
             throw new CampoEmBranco("Campo 'Nome' é obrigatório!");
         }
-        if (emailField.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Campo 'Email' é obrigatório!");
-            throw new CampoEmBranco("Campo 'Email' é obrigatório!");
+        if (emailField.getText().isEmpty() || !emailField.getText().contains("@")) {
+            JOptionPane.showMessageDialog(this, "Campo 'Email' é obrigatório e deve conter '@'!");
+            throw new CampoEmBranco("Campo 'Email' é obrigatório e deve conter '@'!");
         }
-        if (telefoneField.getText().isEmpty()) {
+        if (telefoneField.getText().trim().isEmpty() || telefoneField.getText().contains("_")) {
             JOptionPane.showMessageDialog(this, "Campo 'Telefone' é obrigatório!");
             throw new CampoEmBranco("Campo 'Telefone' é obrigatório!");
         }
@@ -119,55 +142,58 @@ public class TelaCadastro extends JFrame {
             JOptionPane.showMessageDialog(this, "Campo 'Cidade' é obrigatório!");
             throw new CampoEmBranco("Campo 'Cidade' é obrigatório!");
         }
-        if (cepField.getText().isEmpty()) {
+        if (cepField.getText().trim().isEmpty() || cepField.getText().contains("_")) {
             JOptionPane.showMessageDialog(this, "Campo 'CEP' é obrigatório!");
             throw new CampoEmBranco("Campo 'CEP' é obrigatório!");
         }
-
-
     }
+
     private class VoltarListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
         }
     }
+    private void limparCampo() {
+        nomeField.setText("");
+        emailField.setText("");
+        telefoneField.setText("");
+        usernameField.setText("");
+        senhaField.setText("");
+        logradouroField.setText("");
+        cidadeField.setText("");
+        estadoComboBox.setSelectedIndex(0);
+        cepField.setText("");
+    }
 
-    // Classe interna para lidar com o evento de clique no botão de cadastro
     private class CadastrarButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String nome = nomeField.getText();
-            String email = emailField.getText();
-            String telefone = telefoneField.getText();
-            String username = usernameField.getText();
-            String senha = new String(senhaField.getPassword());
-            String logradouro = logradouroField.getText();
-            String cidade = cidadeField.getText();
-            Estado estado = (Estado) estadoComboBox.getSelectedItem();
-            String cep = cepField.getText();
-            try{
+            try {
                 checkCadastro();
-            }catch (CampoEmBranco exeption){
-                System.out.println(exeption.getMessage());
-                return;
-            }
+                
+                String nome = nomeField.getText();
+                String email = emailField.getText();
+                String telefone = telefoneField.getText();
+                String username = usernameField.getText();
+                String senha = new String(senhaField.getPassword());
+                String logradouro = logradouroField.getText();
+                String cidade = cidadeField.getText();
+                Estado estado = (Estado) estadoComboBox.getSelectedItem();
+                String cep = cepField.getText();
 
-            // Criando objeto Endereco
-            Endereco endereco = new Endereco(logradouro, cidade, estado, cep);
+                Endereco endereco = new Endereco(logradouro, cidade, estado, cep);
+                Prestador prestador = new Prestador(nome, email, telefone, username, senha, endereco);
 
-            // Criando objeto Prestador com os dados fornecidos
-            Prestador prestador = new Prestador(nome, email, telefone, username, senha, endereco);
-            try{
                 PrestadorDAO.gravarPrestador(prestador);
-            }catch (Exception exeption){
-                System.out.println(exeption.getMessage());
-                return;
-            }
-            // Exibindo confirmação de cadastro
-            JOptionPane.showMessageDialog(TelaCadastro.this, "Prestador cadastrado com sucesso!");
-            // Limpando os campos após o cadastro
+                JOptionPane.showMessageDialog(TelaCadastro.this, "Prestador cadastrado com sucesso!");
+                limparCampo();
 
+            } catch (CampoEmBranco exception) {
+                System.out.println(exception.getMessage());
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(TelaCadastro.this, "Erro ao cadastrar prestador: " + exception.getMessage());
+            }
         }
     }
 
