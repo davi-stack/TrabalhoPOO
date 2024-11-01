@@ -1,6 +1,8 @@
 package src.main.java.com.mycompany.project.entities;
 import java.io.Serializable;
 import src.main.java.com.mycompany.project.entities.fromMoney.Totalizavel;
+import java.util.ArrayList;
+import src.main.java.com.mycompany.project.entities.Enums.Unidades;
 public class Produto implements Serializable,Totalizavel {
     private String codigo;           // Código único do produto
     private String nome;
@@ -12,6 +14,9 @@ public class Produto implements Serializable,Totalizavel {
     private double metroLinear;      // Em metros lineares
     private double metroQuadrado;    // Em metros quadrados
     private double metroCubico;      // Em metros cúbicos
+
+    // salvar quais unidades de medida o produto tem
+    private ArrayList<Unidades> unidadesDeMedida = new ArrayList<Unidades>();
 
     public double getValorTotal() {
         return preco;
@@ -29,7 +34,19 @@ public class Produto implements Serializable,Totalizavel {
         this.metroQuadrado = metroQuadrado;
         this.metroCubico = metroCubico;
     }
-
+    public Produto(String codigo, String nome, double preco, double rendimento, double comprimento, double litros, int unidades, double metroLinear, double metroQuadrado, double metroCubico, ArrayList<Unidades> unidadesDeMedida) {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.preco = preco;
+        this.rendimento = rendimento;
+        this.comprimento = comprimento;
+        this.litros = litros;
+        this.unidades = unidades;
+        this.metroLinear = metroLinear;
+        this.metroQuadrado = metroQuadrado;
+        this.metroCubico = metroCubico;
+        this.unidadesDeMedida = unidadesDeMedida;
+    }
     // Métodos Get e Set para Código
     public String getCodigo() {
         return codigo;

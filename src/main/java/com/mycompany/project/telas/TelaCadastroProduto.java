@@ -1,5 +1,6 @@
 package src.main.java.com.mycompany.project.telas;
 import src.main.java.com.mycompany.project.entities.Produto;
+import src.main.java.com.mycompany.project.entities.Enums.Unidades;
 import src.main.java.com.mycompany.project.entities.fromMoney.Totalizavel;
 import src.main.java.com.mycompany.project.Exceptions.CampoEmBranco;
 import javax.swing.*;
@@ -9,15 +10,53 @@ import java.awt.event.ActionListener;
 import src.main.java.com.mycompany.project.dao.ProdutoDAO;
 public class TelaCadastroProduto extends JFrame {
 
-    private JTextField codigoField, nomeField, precoField, rendimentoField, comprimentoField, litrosField, unidadesField;
+    private JTextField  nomeField, precoField, rendimentoField, comprimentoField, litrosField, unidadesField;
     private JTextField metroLinearField, metroQuadradoField, metroCubicoField;
     private JButton cadastrarButton, limparButton, voltarButton;
+    private JComboBox unidades;
 
     public TelaCadastroProduto() {
         configurarJanela();
         inicializarComponentes();
         adicionarComponentesAoLayout();
         setVisible(true);
+    }
+    private class checkUnidadeChange implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Se nenhuma unidade for selecionada, desabilita todos os campos
+            
+            if (unidades.getSelectedItem().equals(Unidades.UNIDADE)) {
+                metroLinearField.setEnabled(false);
+                metroQuadradoField.setEnabled(false);
+                metroCubicoField.setEnabled(false);
+                unidadesField.setEnabled(true);
+                return;
+            } 
+            if(unidades.getSelectedItem().equals(Unidades.METROLINEAR)){
+                metroLinearField.setEnabled(true);
+                metroQuadradoField.setEnabled(false);
+                metroCubicoField.setEnabled(false);
+                unidadesField.setEnabled(false);
+                return;
+            }
+            if(unidades.getSelectedItem().equals(Unidades.METROQUADRADO)){
+                metroLinearField.setEnabled(false);
+                metroQuadradoField.setEnabled(true);
+                metroCubicoField.setEnabled(false);
+                unidadesField.setEnabled(false);
+                return;
+            }
+            if(unidades.getSelectedItem().equals(Unidades.METROCUBICO)){
+                metroLinearField.setEnabled(false);
+                metroQuadradoField.setEnabled(false);
+                metroCubicoField.setEnabled(true);
+                unidadesField.setEnabled(false);
+                return;
+            }
+            
+
+        }
     }
 
     private void configurarJanela() {
@@ -30,7 +69,7 @@ public class TelaCadastroProduto extends JFrame {
     }
 
     private void inicializarComponentes() {
-        codigoField = new JTextField(20);
+        unidades = new JComboBox(Unidades.values());
         nomeField = new JTextField(20);
         precoField = new JTextField(20);
         rendimentoField = new JTextField(20);
@@ -66,16 +105,16 @@ public class TelaCadastroProduto extends JFrame {
 
         int linha = 0;
 
-        adicionarCampo("Código:", codigoField, linha++, gbc);
         adicionarCampo("Nome:", nomeField, linha++, gbc);
         adicionarCampo("Preço:", precoField, linha++, gbc);
+        adicionarCampo("Unidades:", unidades, linha++, gbc);
         adicionarCampo("Rendimento:", rendimentoField, linha++, gbc);
         adicionarCampo("Comprimento:", comprimentoField, linha++, gbc);
-        adicionarCampo("Litros:", litrosField, linha++, gbc);
-        adicionarCampo("Unidades:", unidadesField, linha++, gbc);
-        adicionarCampo("Metro Linear:", metroLinearField, linha++, gbc);
-        adicionarCampo("Metro Quadrado:", metroQuadradoField, linha++, gbc);
-        adicionarCampo("Metro Cúbico:", metroCubicoField, linha++, gbc);
+        // adicionarCampo("Litros:", litrosField, linha++, gbc);
+        // adicionarCampo("Unidades:", unidadesField, linha++, gbc);
+        // adicionarCampo("Metro Linear:", metroLinearField, linha++, gbc);
+        // adicionarCampo("Metro Quadrado:", metroQuadradoField, linha++, gbc);
+        // adicionarCampo("Metro Cúbico:", metroCubicoField, linha++, gbc);
 
         // Adicionando os botões na parte inferior
         gbc.gridwidth = 1;
@@ -96,9 +135,15 @@ public class TelaCadastroProduto extends JFrame {
         gbc.gridx = 1;
         add(textField, gbc);
     }
+    private void adicionarCampo(String label, JComboBox comboBox, int linha, GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.gridy = linha;
+        add(new JLabel(label), gbc);
 
+        gbc.gridx = 1;
+        add(comboBox, gbc);
+    }
     private void limparCampos() {
-        codigoField.setText("");
         nomeField.setText("");
         precoField.setText("");
         rendimentoField.setText("");
@@ -121,4 +166,5 @@ public class TelaCadastroProduto extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TelaCadastroProduto::new);
     }
+
 }

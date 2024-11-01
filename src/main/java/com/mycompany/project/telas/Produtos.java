@@ -59,22 +59,31 @@ public class Produtos extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
-                .addGap(93, 93, 93)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
                     .addComponent(jButton1)
-                    .addComponent(jLabel1))
-                .addContainerGap(264, Short.MAX_VALUE))
+                    .addGap(93, 93, 93)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(121, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(50) // Espaçamento inicial
+                    .addComponent(addProduto)
+                    .addGap(70, 100, Short.MAX_VALUE)) // Espaço flexível após o botão
         );
+
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18) // Espaçamento entre grupos
+                .addComponent(addProduto) // Adiciona o botão addProduto ao grupo vertical
+                .addContainerGap(50, Short.MAX_VALUE)
+        );
+
+       
+
         //Mostrar todos os produtos:
         for(Produto produto : produtos){
             layout.setHorizontalGroup(
@@ -93,8 +102,9 @@ public class Produtos extends javax.swing.JFrame {
                 .addComponent(new JLabel(""+produto.getUnidades()))
                 .addComponent(new JLabel(""+produto.getMetroLinear()))
             );
-
+            
         }
+       
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
