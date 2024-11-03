@@ -153,7 +153,4 @@ public class TelaServico extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TelaServico().setVisible(true));
-    }
 }

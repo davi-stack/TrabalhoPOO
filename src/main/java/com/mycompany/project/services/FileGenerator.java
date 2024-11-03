@@ -1,5 +1,5 @@
 // FileGenerator.java
-
+package src.main.java.com.mycompany.project.services;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -22,24 +22,24 @@ public class FileGenerator {
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage();
             document.addPage(page);
-
+    
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
                 contentStream.beginText();
-                // Carrega uma fonte do sistema, como Times ou Helvetica
-                PDType0Font font = PDType0Font.load(document, new File("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"));
+                // Carrega uma fonte do sistema (atualize o caminho conforme o sistema operacional)
+                PDType0Font font = PDType0Font.load(document, new File("C:\\Windows\\Fonts\\arial.ttf"));
                 contentStream.setFont(font, 12);
                 contentStream.newLineAtOffset(100, 700); // Posiciona o texto
                 contentStream.showText(text);
                 contentStream.endText();
             }
-
+    
             document.save(filePath);
             System.out.println("PDF gerado com sucesso em: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
     /**
      * Gera um arquivo CSV com o texto fornecido.
      *
