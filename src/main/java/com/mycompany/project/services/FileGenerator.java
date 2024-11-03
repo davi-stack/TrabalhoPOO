@@ -1,50 +1,71 @@
-package src.main.java.com.mycompany.project.services;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+// FileGenerator.java
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import com.opencsv.CSVWriter;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 
 public class FileGenerator {
 
-    private static final String CSV_FILE_PATH = "output.csv";
-    private static final String PDF_FILE_PATH = "output.pdf";
-
-    // Gera um arquivo CSV a partir de uma string
-    public static void generateCSV(String content) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(CSV_FILE_PATH))) {
-            writer.println(content);
-            System.out.println("Arquivo CSV gerado com sucesso em: " + CSV_FILE_PATH);
-        } catch (IOException e) {
-            handleException("CSV", e);
-        }
-    }
-
-    // Gera um arquivo PDF a partir de uma string
-    public static void generatePDF(String content) {
+    /**
+     * Gera um arquivo PDF com o texto fornecido.
+     *
+     * @param text Conteúdo que será inserido no PDF.
+     * @param filePath Caminho completo onde o arquivo PDF será salvo.
+     */
+    public static void generatePdf(String text, String filePath) {
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage();
             document.addPage(page);
-            
+
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
                 contentStream.beginText();
-                contentStream.newLineAtOffset(100, 700); // Posição do texto
-                contentStream.showText(content);
+                // Carrega uma fonte do sistema, como Times ou Helvetica
+                PDType0Font font = PDType0Font.load(document, new File("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"));
+                contentStream.setFont(font, 12);
+                contentStream.newLineAtOffset(100, 700); // Posiciona o texto
+                contentStream.showText(text);
                 contentStream.endText();
             }
 
-            document.save(PDF_FILE_PATH);
-            System.out.println("Arquivo PDF gerado com sucesso em: " + PDF_FILE_PATH);
+            document.save(filePath);
+            System.out.println("PDF gerado com sucesso em: " + filePath);
         } catch (IOException e) {
-            handleException("PDF", e);
+            e.printStackTrace();
         }
     }
 
-    // Método auxiliar para tratar exceções
-    private static void handleException(String fileType, Exception e) {
-        System.err.println("Erro ao gerar o arquivo " + fileType + ": " + e.getMessage());
+    /**
+     * Gera um arquivo CSV com o texto fornecido.
+     *
+     * @param text Conteúdo que será inserido no CSV.
+     * @param filePath Caminho completo onde o arquivo CSV será salvo.
+     */
+    public static void generateCsv(String text, String filePath) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+            String[] line = { text };  // Cria uma linha com o texto
+            writer.writeNext(line);    // Escreve a linha no CSV
+            System.out.println("CSV gerado com sucesso em: " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        // Exemplo de uso dos métodos
+        String texto = "Este é o conteúdo do arquivo.";
+        
+        // Gerar PDF
+        generatePdf(texto, "arquivo.pdf");
+        
+        // Gerar CSV
+        generateCsv(texto, "arquivo.csv");
+        
+        System.out.println("Arquivos gerados com sucesso!");
     }
 }
