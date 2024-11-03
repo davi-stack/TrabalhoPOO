@@ -1,18 +1,33 @@
 package src.main.java.com.mycompany.project.entities.fromMoney;
+import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Orcamento {
+import java.util.Date;
+
+public class Orcamento implements Serializable {
     ArrayList<Totalizavel> itens;
     String id;
     String nomeCliente;
     String data;
     Integer diasValidos;
     String descricao;
-    ArrayList<String> obs;
+    List<String> obs;
+    Date dataValidade;
     //Desconto
     double desconto;
-    
+    public ArrayList<Totalizavel> getItem(int index){
+        return itens;
+    }
+    public ArrayList<Totalizavel> getItens(){
+        return itens;
+    }
+    @Override
+    public String toString(){
+        return describeOrcamento();
+    }
     //Impostos
     public Orcamento(){
+        id = Math.random() + "";
         itens = new ArrayList<Totalizavel>();
     }
     public void adicionarItem(Totalizavel item){
@@ -50,6 +65,27 @@ public class Orcamento {
             descricao += "\n- " + " Observação " + i + ": " + obs.get(i);
         }
         return descricao;
+    }
+    public void setCliente(String nomeCliente){
+        this.nomeCliente = nomeCliente;
+    }
+    public String getId(){
+        return id;
+    }
+    public void setData(String data){
+        this.data = data;
+    }
+    public void setDiasValidos(Integer diasValidos){
+        this.diasValidos = diasValidos;
+    }
+    public void setDescricao(String descricao){
+        this.descricao = descricao;
+    }
+    public void setObs(List<String> obs){
+        this.obs = obs;
+    }
+    public void setDataValidade(Date dataValidade){
+        this.dataValidade = dataValidade;
     }
 
 }

@@ -4,7 +4,6 @@ public class Prestador extends Pessoa implements Serializable {
     private String username;
     private String senha;
     private Endereco endereco;
-
     // Construtor
     public Prestador(String nome, String email, String telefone, String username, String senha) {
         super(nome, email, telefone);

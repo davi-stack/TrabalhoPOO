@@ -35,8 +35,7 @@ public class ProdutoDAO {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    
+    } 
     public static List<Produto> lerProdutos(){
         createFileProduct();
         List<Produto> produtos = new ArrayList<>();

@@ -3,11 +3,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import src.main.java.com.mycompany.project.entities.Prestador;
-import src.main.java.com.mycompany.project.entities.Produto;
 public class PrestadorDAO {
 
     private static final String FILE_PATH = "BancoDeDados/prestadores.ser";
-    private static final String FILE_PATH_produtos = "BancoDeDados/produtos.ser";
     // Método para garantir que o diretório e o arquivo existam
     private static void criarArquivoSeNecessario() {
         File file = new File(FILE_PATH);
