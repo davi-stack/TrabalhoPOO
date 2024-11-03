@@ -25,11 +25,19 @@ public class FileGenerator {
     
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
                 contentStream.beginText();
-                // Carrega uma fonte do sistema (atualize o caminho conforme o sistema operacional)
+    
+                // Carrega a fonte (atualize o caminho se necessário)
                 PDType0Font font = PDType0Font.load(document, new File("C:\\Windows\\Fonts\\arial.ttf"));
                 contentStream.setFont(font, 12);
-                contentStream.newLineAtOffset(100, 700); // Posiciona o texto
-                contentStream.showText(text);
+                contentStream.newLineAtOffset(100, 700); // Posição inicial
+    
+                // Divide o texto em linhas com base nas quebras de linha
+                String[] lines = text.split("\n");
+                for (String line : lines) {
+                    contentStream.showText(line);
+                    contentStream.newLineAtOffset(0, -15); // Move para a próxima linha
+                }
+    
                 contentStream.endText();
             }
     

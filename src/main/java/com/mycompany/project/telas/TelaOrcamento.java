@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-// import src.main.java.com.mycompany.project.telas.ExportServico;
+import src.main.java.com.mycompany.project.telas.ExportServico;
 import src.main.java.com.mycompany.project.telas.TelaCliente;
 import src.main.java.com.mycompany.project.telas.TelaCadastroProduto;
 import src.main.java.com.mycompany.project.telas.TelaServico;
@@ -271,7 +271,7 @@ public class TelaOrcamento extends JFrame {
         JButton btnImprimir = new JButton("Exportar/Imprimir");
         btnImprimir.setBackground(new Color(255, 87, 51));
         btnImprimir.setForeground(Color.WHITE);
-        // btnImprimir.addActionListener(new ExportServico(orcamento, txtData, campoDescricao));
+        btnImprimir.addActionListener(new ExportServico(orcamento, txtData, campoDescricao));
         JPanel resumoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         resumoPanel.add(detalhesPanel);
         resumoPanel.add(lblValorTotal);
