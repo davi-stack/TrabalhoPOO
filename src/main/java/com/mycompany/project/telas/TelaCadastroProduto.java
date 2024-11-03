@@ -23,6 +23,9 @@ public class TelaCadastroProduto extends JFrame {
     private JButton cadastrarButton, limparButton, voltarButton;
     private JPanel categoriasPanel; // Painel para checkboxes das categorias
     private List<JCheckBox> checkBoxes; // Lista de checkboxes
+    private JComboBox<String> tipoProdutoComboBox;
+    private JTextField quantidadePorUnidadeField; // Campo para quantidade por unidade
+    private JTextField quantidadePorGranelField;  // Campo para quantidade granel, se necessário
 
     public TelaCadastroProduto() {
         configurarJanela();
@@ -39,8 +42,22 @@ public class TelaCadastroProduto extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(new Color(240, 248, 255));
     }
+    // Método para atualizar os campos com base no tipo de produto
+    private void atualizarCamposEspecificos() {
+        String tipoSelecionado = (String) tipoProdutoComboBox.getSelectedItem();
+
+        // Mostrar ou ocultar campos conforme o tipo de produto
+        quantidadePorUnidadeField.setVisible("ProdutoPorUnidade".equals(tipoSelecionado));
+        quantidadePorGranelField.setVisible("ProdutoGranel".equals(tipoSelecionado));
+    }
 
     private void inicializarComponentes() {
+        tipoProdutoComboBox = new JComboBox<>(new String[] { "ProdutoPorUnidade", "ProdutoGranel", "Peça" });
+        tipoProdutoComboBox.addActionListener(e -> atualizarCamposEspecificos());
+
+        // Campos específicos de cada tipo de produto
+        quantidadePorUnidadeField = new JTextField(20);
+        quantidadePorGranelField = new JTextField(20);
         unidades = new JComboBox<>(Unidades.values());
         nomeField = new JTextField(20);
         precoField = new JTextField(20);
@@ -72,7 +89,7 @@ public class TelaCadastroProduto extends JFrame {
             categoriasPanel.add(checkBox);
         }
     }
-
+    
     private void adicionarComponentesAoLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -81,11 +98,14 @@ public class TelaCadastroProduto extends JFrame {
 
         int linha = 0;
 
+        adicionarCampoCombo("Tipo de Produto:", tipoProdutoComboBox, linha++, gbc);
         adicionarCampo("Nome:", nomeField, linha++, gbc);
         adicionarCampo("Preço:", precoField, linha++, gbc);
-        adicionarCampo("Unidades:", unidades, linha++, gbc);
         adicionarCampo("Quantidade:", valor, linha++, gbc);
-
+        adicionarCampo("Quantidade por Unidade:", quantidadePorUnidadeField, linha++, gbc);
+        adicionarCampo("Quantidade por Granel:", quantidadePorGranelField, linha++, gbc);
+        
+        
         // Adicionar o painel de categorias ao layout
         gbc.gridx = 0;
         gbc.gridy = linha++;
@@ -104,7 +124,14 @@ public class TelaCadastroProduto extends JFrame {
         gbc.gridx = 2;
         add(cadastrarButton, gbc);
     }
-
+    // Sobrecarga do método adicionarCampo para aceitar JComboBox de qualquer tipo
+    private void adicionarCampoCombo(String label, JComboBox<?> comboBox, int linha, GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.gridy = linha;
+        add(new JLabel(label), gbc);
+        gbc.gridx = 1;
+        add(comboBox, gbc);
+    }
     private void adicionarCampo(String label, JTextField textField, int linha, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy = linha;
@@ -112,15 +139,6 @@ public class TelaCadastroProduto extends JFrame {
         gbc.gridx = 1;
         add(textField, gbc);
     }
-
-    private void adicionarCampo(String label, JComboBox<Unidades> comboBox, int linha, GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = linha;
-        add(new JLabel(label), gbc);
-        gbc.gridx = 1;
-        add(comboBox, gbc);
-    }
-
     private void limparCampos() {
         nomeField.setText("");
         precoField.setText("");
