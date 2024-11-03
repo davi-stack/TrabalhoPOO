@@ -17,7 +17,10 @@ public class Produto implements Serializable,Totalizavel {
     // private double metroCubico;      // Em metros cúbicos
     // private Unidades unidade;
     // salvar quais unidades de medida o produto tem
-    private double valor;
+    public String getNomeItem(){
+        return nome;
+    }
+    
     private ArrayList<Unidades> unidadesDeMedida = new ArrayList<Unidades>();
     private ArrayList<CategoriaProduto> categorias = new ArrayList<CategoriaProduto>();
     public void addCategoria(CategoriaProduto categoria){
@@ -31,12 +34,11 @@ public class Produto implements Serializable,Totalizavel {
     }
     public Produto(String nome, Unidades unidade, double preco, double valor) {
         this.unidade = unidade;
-        this.valor = valor;
+        this.rendimento = valor;
         this.preco = preco;
         this.nome = nome;
         //gera um numero aleatorio para o codigo
         this.codigo = String.valueOf(Math.random());
-
     }
     // Construtor
     public Produto(String codigo, String nome, double preco, double rendimento, double comprimento, double litros, int unidades, double metroLinear, double metroQuadrado, double metroCubico) {
@@ -87,9 +89,6 @@ public class Produto implements Serializable,Totalizavel {
 
     public void setRendimento(double rendimento) {
         this.rendimento = rendimento;
-    }
-    public double getValor(){
-        return valor;
     }
     // Métodos Get e Set para Comprimento
    public Unidades getUnidade(){

@@ -152,6 +152,7 @@ public class TelaCadastro extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
+            new TelaLogin().setVisible(true);
         }
     }
     private void limparCampo() {
