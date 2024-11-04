@@ -60,11 +60,10 @@ public class ExportServico implements ActionListener {
 
         // Verificar escolha do usuário e chamar o método de exportação correspondente
         if (escolha == 0) { // CSV
-            FileGenerator.generateCsv(conteudo.toString(), "BancoDeDados/CSVs");
+            FileGenerator.generateCsv(conteudo.toString(), "BancoDeDados/CSVs/" + orcamento.getId() + ".csv");
             JOptionPane.showMessageDialog(null, "Orçamento exportado como CSV com sucesso!");
         } else if (escolha == 1) { // PDF
-            FileGenerator.generatePdf(conteudo.toString(), "BancoDeDados/Pdfs");
-            JOptionPane.showMessageDialog(null, "Orçamento exportado como PDF com sucesso!");
+            FileGenerator.generatePdfFromOrcamento(orcamento, "BancodeDados/PDFs" + orcamento.getId() + ".pdf");
         }
     }
 }

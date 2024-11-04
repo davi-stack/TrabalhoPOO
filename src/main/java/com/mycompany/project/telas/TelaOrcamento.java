@@ -45,18 +45,89 @@ public class TelaOrcamento extends JFrame {
     JComboBox<String> cbClientes;
     JTextArea campoDescricao;
     JLabel labelCliente;
-    JButton btnSalvar;
     JTable tabelaItens;
+    private JTextArea obsTextArea;
+    JLabel lblValorTotal;
     private DefaultComboBoxModel<String> modeloClientes;
+    public class actionSavarOrcamento implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Orçamento não pode ter valor 0
+            if (orcamento.getValorTotal() == 0) {
+                JOptionPane.showMessageDialog(null, "O orçamento não pode ter valor 0");
+                return;
+            }
+            //data deve ser válida, mesmo sendo String
+            if (!orcamento.isDataValida()) {
+                JOptionPane.showMessageDialog(null, "Data inválida");
+                return;
+            }
+           
+            //Checa se todos os campos estão preenchidos
+            if (orcamento.getItens().size() == 0) {
+                JOptionPane.showMessageDialog(null, "O orçamento não possui itens");
+                return;
+            }
+            if (txtData.getText().equals("  /  /    ")) {
+                JOptionPane.showMessageDialog(null, "A data do orçamento não foi preenchida");
+                return;
+            }
 
+            if (campoDescricao.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "A descrição do orçamento não foi preenchida");
+                return;
+            }
+            //salva orçamento
+            Cliente clienteSelecionado = clientesCadastrados.get(cbClientes.getSelectedIndex());
+            orcamento.setCliente(clienteSelecionado.getNome());
+            orcamento.setDescricao(campoDescricao.getText());
+            orcamento.setObs(listaObservacoes.stream().map(JTextArea::getText).toList());
+            orcamento.setData(txtData.getText());
+            try{
+
+                OrcamentoDAO.addOrcamento(orcamento);
+                //limpar campos
+                campoDescricao.setText("");
+                txtData.setText("");
+                model.setRowCount(0);
+                listaObservacoes.clear();
+                orcamento = new Orcamento();
+
+                JOptionPane.showMessageDialog(null, "Orçamento salvo com sucesso!");
+                return;
+
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Erro ao salvar orçamento");
+            }
+
+
+            try{
+
+                OrcamentoDAO.addOrcamento(orcamento);
+                return;
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Erro ao salvar orçamento");
+            }
+            //limpar campos
+            campoDescricao.setText("");
+            txtData.setText("");
+            model.setRowCount(0);
+            listaObservacoes.clear();
+            orcamento = new Orcamento();
+
+            JOptionPane.showMessageDialog(null, "Orçamento salvo com sucesso!");
+        }
+
+    }
     public void addProduto(Produto p){
         orcamento.adicionarItem(p);	
         model.addRow(new Object[]{p.getNome(), "R$ " + String.format("%.2f", p.getPreco())});
+        atualizarTotal();
     }
     public void addServico(Servico s){
         orcamento.adicionarItem(s);
         model.addRow(new Object[]{s.getNomeItem(), "R$ " + String.format("%.2f", s.getValorTotal())});
-        
+        atualizarTotal();
         
     }
     public class salvarAdcion implements ActionListener {
@@ -195,12 +266,12 @@ public class TelaOrcamento extends JFrame {
         JLabel titulo = new JLabel("Novo Orçamento");
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
         JButton btnSalvar = new JButton("Salvar");
+        btnSalvar.addActionListener(new actionSavarOrcamento());
         btnSalvar.setBackground(new Color(76, 175, 80));
         btnSalvar.setForeground(Color.WHITE);
         barraSuperior.setLayout(new BorderLayout());
         barraSuperior.add(titulo, BorderLayout.WEST);
         barraSuperior.add(btnSalvar, BorderLayout.EAST);
-
         // Seção Cliente
         
         // Painel de Cliente
@@ -263,9 +334,8 @@ public class TelaOrcamento extends JFrame {
 
         JPanel detalhesPanel = criarPainelDetalhesOrcamento();
 
-
         // Resumo do Orçamento
-        JLabel lblValorTotal = new JLabel("Total: R$ 0,00");
+        lblValorTotal = new JLabel("Total: R$ 0,00");
         lblValorTotal.setFont(new Font("Arial", Font.BOLD, 16));
 
         JButton btnImprimir = new JButton("Exportar/Imprimir");
@@ -290,34 +360,88 @@ public class TelaOrcamento extends JFrame {
         btnSalvar.addActionListener(new salvarAdcion());
         add(layoutPrincipal);
     }
-    
+    // Parte do código principal, onde chamamos o criarPainelCliente()
+    private void atualizarTotal() {
+        lblValorTotal.setText("Total: R$ " + String.format("%.2f", orcamento.getValorTotal()));
+    }
     private JPanel criarPainelCliente() {
         JPanel clientePanel = new JPanel();
-        clientePanel.setLayout(new BoxLayout(clientePanel, BoxLayout.Y_AXIS));
-        clientePanel.setBorder(BorderFactory.createTitledBorder("Cliente"));
-        
+        clientePanel.setLayout(new BorderLayout(10, 10)); // Usar BorderLayout para organizar melhor o espaço
+    
+        // === Seção de pesquisa de clientes ===
+        JPanel pesquisaClientePanel = new JPanel();
+        pesquisaClientePanel.setLayout(new BoxLayout(pesquisaClientePanel, BoxLayout.Y_AXIS));
+        pesquisaClientePanel.setBorder(BorderFactory.createTitledBorder("Cliente"));
+    
         JLabel labelCliente = new JLabel("Cliente:");
         txtNomeCliente = new JTextField(15);
         txtNomeCliente.setToolTipText("Buscar Cliente");
-
+    
         modeloClientes = new DefaultComboBoxModel<>(clientesCadastrados.stream().map(Cliente::getNome).toArray(String[]::new));
         cbClientes = new JComboBox<>(modeloClientes);
         cbClientes.setPreferredSize(new Dimension(200, 25));
-
+    
         txtNomeCliente.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 filtrarClientes(txtNomeCliente.getText());
             }
         });
-
-        clientePanel.add(labelCliente);
-        clientePanel.add(txtNomeCliente);
-        clientePanel.add(cbClientes);
-
+    
+        pesquisaClientePanel.add(labelCliente);
+        pesquisaClientePanel.add(txtNomeCliente);
+        pesquisaClientePanel.add(cbClientes);
+    
+        // === Seção de orçamentos do cliente com rolagem ===
+        JPanel orcamentosPanel = new JPanel(new BorderLayout());
+        orcamentosPanel.setBorder(BorderFactory.createTitledBorder("Orçamentos do Cliente"));
+    
+        List<Orcamento> orcamentos = OrcamentoDAO.readOrcamentos();
+        String[] colunasOrcamento = {"ID", "Data", "Valor Total"};
+        DefaultTableModel modelOrcamentos = new DefaultTableModel(colunasOrcamento, 0);
+    
+        orcamentos.forEach(o -> modelOrcamentos.addRow(new Object[]{
+                o.getId(),
+                o.getData(),
+                "R$ " + String.format("%.2f", o.getValorTotal())
+        }));
+    
+        JTable tabelaOrcamentos = new JTable(modelOrcamentos);
+        tabelaOrcamentos.setFillsViewportHeight(true);
+        JScrollPane scrollOrcamentos = new JScrollPane(tabelaOrcamentos);
+        scrollOrcamentos.setPreferredSize(new Dimension(250, 100)); // Ajustar a altura para o espaço ficar menor
+    
+        orcamentosPanel.add(scrollOrcamentos, BorderLayout.CENTER);
+    
+        // Adicionar ambos os painéis de pesquisa e orçamentos ao clientePanel
+        clientePanel.add(pesquisaClientePanel, BorderLayout.NORTH);
+        clientePanel.add(orcamentosPanel, BorderLayout.CENTER);
+    
         return clientePanel;
     }
-
+    
+    // Código principal para reposicionar os botões de adicionar itens
+    private JPanel criarPainelItens() {
+        JPanel tabelaItensPanel = new JPanel(new BorderLayout());
+        tabelaItensPanel.add(new JLabel("Itens do Orçamento"), BorderLayout.NORTH);
+        tabelaItensPanel.add(new JScrollPane(tabelaItens), BorderLayout.CENTER);
+    
+        // Adicionar botões de adicionar produto e serviço
+        JPanel botoesItensPanel = new JPanel();
+        JButton btnAdicionarProduto = new JButton("Adicionar Produto");
+        JButton btnAdicionarServico = new JButton("Adicionar Serviço");
+    
+        btnAdicionarProduto.addActionListener(new OpenTelaProduto());
+        btnAdicionarServico.addActionListener(new OpenTelaServico());
+    
+        botoesItensPanel.add(btnAdicionarProduto);
+        botoesItensPanel.add(btnAdicionarServico);
+    
+        tabelaItensPanel.add(botoesItensPanel, BorderLayout.SOUTH);
+        
+        return tabelaItensPanel;
+    }
+    
     private void filtrarClientes(String termo) {
         modeloClientes.removeAllElements();
         clientesCadastrados.stream()

@@ -23,6 +23,7 @@ public class TelaServico extends JFrame {
     public TelaServico() {
         initComponents();
     }
+    
 
     private void initComponents() {
         setTitle("Cadastro de Serviço");

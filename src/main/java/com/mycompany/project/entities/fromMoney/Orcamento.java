@@ -72,8 +72,30 @@ public class Orcamento implements Serializable {
     public String getId(){
         return id;
     }
+    public boolean isDataValida(){
+        // Vê se a String segue o formato DD/MM/AAAA, com DD < 32, MM < 13 e AAAA > 0
+        return data.matches("([0-2][0-9]|3[0-1])/(0[0-9]|1[0-2])/\\d{4}");
+
+    }
+    public String getNomeCliente(){
+        return nomeCliente;
+    }
+    public List<String> getObs(){
+        return obs;
+    }
+
     public void setData(String data){
         this.data = data;
+    }
+    public int getDiasValidos(){
+        return diasValidos;
+    }
+    public String getDescricao(){
+        return descricao;
+    }
+    
+    public String getData(){
+        return data;
     }
     public void setDiasValidos(Integer diasValidos){
         this.diasValidos = diasValidos;
