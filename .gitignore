@@ -1,6 +1,6 @@
 # Ignorar a pasta BancoDeDados inteira
 BancoDeDados/
-
+*.class
 # Outros arquivos ou pastas a serem ignorados
 *.log
 *.tmp
