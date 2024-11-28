@@ -1,3 +1,6 @@
 # TrabalhoPO
-trabalho para matéria de POO
-Criador de orçamento
+trabalho para matï¿½ria de POO
+Criador de orï¿½amento
+
+# Compilar o cÃ³digo no terminal
+c:; cd 'c:\Users\Davi\Desktop\bootCamp\TrabalhoPOO'; & 'C:\Program Files\Java\jdk-22\bin\java.exe' '@C:\Users\Davi\AppData\Local\Temp\cp_916due54h3hvvngr9gje15dx5.argfile' 'src.main.java.com.mycompany.project.Main'
